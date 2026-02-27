@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useWallet } from '../contexts/WalletContext'
@@ -8,6 +8,7 @@ import ParticleBackground from '../components/ParticleBackground'
 export default function DashboardPage() {
   const { publicKey, balance, disconnect, fetchBalance } = useWallet()
   const navigate = useNavigate()
+  const [addressCopied, setAddressCopied] = useState(false)
 
   useEffect(() => {
     if (!publicKey) navigate('/')
@@ -23,7 +24,8 @@ export default function DashboardPage() {
 
   const copyAddress = () => {
     navigator.clipboard.writeText(publicKey || '')
-    alert('Address copied!')
+    setAddressCopied(true)
+    setTimeout(() => setAddressCopied(false), 2000)
   }
 
   return (
@@ -74,9 +76,9 @@ export default function DashboardPage() {
                 <span className="text-white font-mono text-sm">{shortAddress}</span>
                 <button
                   onClick={copyAddress}
-                  className="text-primary text-xs hover:underline"
+                  className={`text-xs transition-colors ${addressCopied ? 'text-accent' : 'text-primary hover:underline'}`}
                 >
-                  Copy
+                  {addressCopied ? '✓ Copied!' : 'Copy'}
                 </button>
               </div>
             </div>
